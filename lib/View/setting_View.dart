@@ -20,13 +20,44 @@ class SettingView extends StatelessWidget {
               Navigator.pop(context); // 뒤로 가기 버튼을 눌렀을 때 현재 화면을 닫음
             },
           ),
-          title: Text("설정",
-              style: TextStyle(fontSize: 20, fontFamily: 'cafe24ssurround')),
+          title: Text(
+            "설정",
+            style: TextStyle(fontSize: 20, fontFamily: 'cafe24ssurround'),
+          ),
         ),
       ),
-      body: Center(
-        child: Text("대충 리스트 좌라락",
-            style: TextStyle(fontSize: 20, fontFamily: 'cafe24ssurroundair')),
+      body: ListView.builder(
+        itemCount: 6,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              elevation: 3,
+              child: ListTile(
+                title: Text(
+                  '리스트 아이템 : $index',
+                  style:
+                      TextStyle(fontSize: 20, fontFamily: 'cafe24ssurroundair'),
+                ),
+                subtitle: Text(
+                  '리스트 내용 : $index',
+                  style:
+                      TextStyle(fontSize: 20, fontFamily: 'cafe24ssurroundair'),
+                ),
+                leading: CircleAvatar(
+                  backgroundColor: Colors.blue,
+                  child: Text('$index'),
+                ),
+                onTap: () {
+                  print('Tapped on item $index');
+                },
+              ),
+            ),
+          );
+        },
       ),
     );
   }
