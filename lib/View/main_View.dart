@@ -4,6 +4,8 @@
 
 // ignore_for_file: camel_case_types
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:garodeung/View/message_View.dart';
 import 'package:garodeung/View/setting_View.dart';
@@ -38,13 +40,35 @@ class mainViewContent extends StatefulWidget {
 
 class _mainViewContentState extends State<mainViewContent>
     with SingleTickerProviderStateMixin {
+  // scroll controller.
+  late ScrollController _scrollController;
+
+  late Color _appBarColors; // 변수 초기화
+
+  // change app bar color
+  void _changeAppBarColor() {
+    if (_scrollController.hasClients) {
+      if (_scrollController.offset == 0) {
+        _appBarColors = Color.fromARGB(255, 255, 255, 255).withOpacity(0.5);
+      } else {
+        _appBarColors = Colors.transparent;
+      }
+
+      // 상태 변경.
+      setState(() {});
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _appBarColors = Color.fromRGBO(255, 255, 255, 1).withOpacity(0.5);
+    _scrollController = ScrollController()..addListener(_changeAppBarColor);
   }
 
   @override
   void dispose() {
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -52,41 +76,49 @@ class _mainViewContentState extends State<mainViewContent>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(50.0),
-            child: AppBar(
-              backgroundColor: Color.fromARGB(245, 255, 255, 255), // 추후 변경
+          preferredSize: const Size.fromHeight(50.0),
+          child: Container(
+            child: ClipRRect(
+              child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: AppBar(
+                    backgroundColor: _appBarColors, // 추후 변경
 
-              // 좌측 담당, 추후 이미지로 바꾸는 게? -----------------------------------
-              leadingWidth: 150,
-              leading: TextButton.icon(
-                style: TextButton.styleFrom(
-                    foregroundColor: Color.fromARGB(255, 126, 126, 126)),
-                label: const Text(
-                  "가로등",
-                  style: TextStyle(fontSize: 30, fontFamily: 'cafe24ssurround'),
-                ),
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.light,
-                  size: 35,
-                  color: Color.fromARGB(255, 200, 142, 255),
-                ),
-              ),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SettingView(),
+                    // 좌측 담당, 추후 이미지로 바꾸는 게? -----------------------------------
+                    leadingWidth: 150,
+                    leading: TextButton.icon(
+                      style: TextButton.styleFrom(
+                          foregroundColor: Color.fromARGB(255, 126, 126, 126)),
+                      label: const Text(
+                        "가로등",
+                        style: TextStyle(
+                            fontSize: 30, fontFamily: 'cafe24ssurround'),
                       ),
-                    );
-                  },
-                  icon: Icon(Icons.settings),
-                  color: Colors.grey,
-                ),
-              ],
-            )),
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.light,
+                        size: 35,
+                        color: Color.fromARGB(255, 200, 142, 255),
+                      ),
+                    ),
+                    actions: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SettingView(),
+                            ),
+                          );
+                        },
+                        icon: Icon(Icons.settings),
+                        color: Colors.grey,
+                      ),
+                    ],
+                  )),
+            ),
+          ),
+        ),
         extendBodyBehindAppBar: true,
         extendBody: true,
         bottomNavigationBar: Container(
